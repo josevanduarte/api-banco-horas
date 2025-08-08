@@ -1,4 +1,4 @@
-
+# api_wrapper_flask.py
 from flask import Flask, request, jsonify
 import hashlib
 import requests
@@ -16,16 +16,10 @@ def gerar_token_sha256(data_formatada):
 
 @app.route("/")
 def home():
-    return "✅ API Horas Extras está online! Use /ponto_consolidado_banco?inicio=...&fim=..."
+    return "✅ API Ponto Consolidado está online! Use /ponto_consolidado_banco"
 
 @app.route("/ponto_consolidado_banco", methods=["GET"])
-def consultar_horas_extras():
-    dtde = request.args.get("inicio")
-    dtate = request.args.get("fim")
-
-    if not dtde or not dtate:
-        return jsonify({"erro": "Parâmetros 'inicio' e 'fim' são obrigatórios. Ex: ?inicio=01/01/2025&fim=06/08/2025"}), 400
-
+def consultar_ponto_consolidado():
     data_hoje = datetime.now().strftime("%d/%m/%Y")
     token = gerar_token_sha256(data_hoje)
 
@@ -37,10 +31,7 @@ def consultar_horas_extras():
 
     body = {
         "pag": "ponto_consolidado_banco",
-        "cmd": "get",
-        "dtde": dtde,
-        "dtate": dtate,
-       "alteracao": False
+        "cmd": "get"
     }
 
     try:
