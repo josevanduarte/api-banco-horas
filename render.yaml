@@ -3,7 +3,7 @@ services:
     name: api-ponto-consolidado
     env: python
     buildCommand: ""
-    startCommand: "python api_wrapper_flask (1).py"
+    startCommand: "python api_wrapper_flask.py"
     plan: free
     region: oregon
     autoDeploy: true
