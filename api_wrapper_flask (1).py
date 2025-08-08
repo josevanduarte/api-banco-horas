@@ -16,9 +16,9 @@ def gerar_token_sha256(data_formatada):
 
 @app.route("/")
 def home():
-    return "✅ API Horas Extras está online! Use /consultar-horas-extras?inicio=...&fim=..."
+    return "✅ API Horas Extras está online! Use /ponto_consolidado_banco?inicio=...&fim=..."
 
-@app.route("/consultar-horas-extras", methods=["GET"])
+@app.route("/ponto_consolidado_banco", methods=["GET"])
 def consultar_horas_extras():
     dtde = request.args.get("inicio")
     dtate = request.args.get("fim")
@@ -36,7 +36,7 @@ def consultar_horas_extras():
     }
 
     body = {
-        "pag": "ponto_relatorio_hora_extra",
+        "pag": "ponto_consolidado_banco",
         "cmd": "get",
         "dtde": dtde,
         "dtate": dtate,
