@@ -36,11 +36,10 @@ def consultar_banco_horas():
     }
 
     body = {
-        "pag": "ponto_consolidado_banco",
-        "cmd": "get",
-        "dtde": dtde,
-        "dtate": dtate
-    }
+  "pag": "ponto_consolidado_banco",
+  "cmd": "get"
+}
+
 
     try:
         response = requests.post(API_URL, json=body, headers=headers)
