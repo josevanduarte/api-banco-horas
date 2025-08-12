@@ -26,7 +26,7 @@ def get_headers():
 
 @app.route("/")
 def home():
-    return "✅ API Banco de Horas online! Use /ponto_banco_horas com parâmetros."
+    return "✅ API Banco de Horas online! Use /ponto_consolidado_banco com parâmetros."
 
 @app.route("/ponto_consolidado_banco", methods=["GET"])
 def ponto_banco_horas():
