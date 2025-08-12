@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: api-ponto-consolidado-banco
-    env: python
-    buildCommand: ""
-    startCommand: "python api_ponto_consolidado_banco.py"
-    plan: free
