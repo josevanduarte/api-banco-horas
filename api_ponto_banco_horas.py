@@ -28,11 +28,11 @@ def get_headers():
 def home():
     return "✅ API Banco de Horas online! Use /ponto_banco_horas com parâmetros."
 
-@app.route("/ponto_banco_horas", methods=["GET"])
+@app.route("/ponto_consolidado_banco", methods=["GET"])
 def ponto_banco_horas():
     # Monta o corpo da requisição
     body = {
-        "pag": "ponto_banco_horas",
+        "pag": "ponto_consolidado_banco",
         "cmd": "get"
     }
 
