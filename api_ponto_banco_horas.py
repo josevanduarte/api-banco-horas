@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 import hashlib
 import requests
@@ -26,10 +25,10 @@ def get_headers():
 
 @app.route("/")
 def home():
-    return "✅ API Banco de Horas online! Use /ponto_consolidado_banco com parâmetros."
+    return "✅ API ponto_consolidado_banco online! Use /ponto_consolidado_banco com parâmetros."
 
 @app.route("/ponto_consolidado_banco", methods=["GET"])
-def ponto_banco_horas():
+def ponto_consolidado_banco():
     # Monta o corpo da requisição
     body = {
         "pag": "ponto_consolidado_banco",
