@@ -1,0 +1,8 @@
+
+services:
+  - type: web
+    name: api-ponto-banco-horas
+    env: python
+    buildCommand: ""
+    startCommand: "python api_ponto_banco_horas.py"
+    plan: free
