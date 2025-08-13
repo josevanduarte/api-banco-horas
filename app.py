@@ -6,8 +6,8 @@ from datetime import datetime
 app = Flask(__name__)
 
 # CONFIGURAÇÕES FIXAS
-TOKEN_ORIGINAL = "123"        # Substitua pelo token fornecido pelo suporte
-USER = "User-login"           # Substitua pelo seu login de usuário
+TOKEN_ORIGINAL = "mRvd11QSxXs5LUL$CfW1"        # Substitua pelo token fornecido pelo suporte
+USER = "02297349289"           # Substitua pelo seu login de usuário
 API_URL = "https://stou.ifractal.com.br/i9saude/rest/"
 
 def gerar_token_sha256(data_formatada):
