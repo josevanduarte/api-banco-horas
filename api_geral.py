@@ -23,7 +23,7 @@ def get_headers():
 
 @app.route("/")
 def home():
-    return "✅ API Geral online! Use /ponto_geral, /horas_extras ou /ponto_banco_horas_extrato com parâmetros."
+    return "✅ API Geral online! Use /ponto_geral, /horas_extras ou /ponto_consolidado_banco com parâmetros."
 
 @app.route("/ponto_geral", methods=["GET"])
 def ponto_geral():
@@ -62,7 +62,7 @@ def horas_extras():
         return jsonify({"erro": str(e)}), 500
 
 @app.route("/ponto_consolidado_banco", methods=["GET"])
-def ponto_banco_horas_extrato():
+def ponto_consolidado_banco():
     body = {
         "pag": "ponto_consolidado_banco",
         "cmd": "get"
