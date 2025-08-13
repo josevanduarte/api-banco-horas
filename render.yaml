@@ -1,0 +1,8 @@
+
+services:
+  - type: web
+    name: api-ponto-geral
+    env: python
+    buildCommand: ""
+    startCommand: "python api_geral.py"
+    plan: free
