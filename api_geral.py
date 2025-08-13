@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import hashlib
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -21,64 +21,43 @@ def get_headers():
         "Token": gerar_token_sha256(data_hoje)
     }
 
-@app.route("/")
-def home():
-    return "✅ API Geral online! Use /ponto_geral, /horas_extras ou /ponto_banco_horas_extrato com parâmetros."
-
-@app.route("/ponto_geral", methods=["GET"])
-def ponto_geral():
-    body = {
-        "pag": "ponto_geral",
-        "cmd": "get"
-    }
-    for key in request.args:
-        body[key] = request.args.get(key)
+@app.route("/ponto_banco_horas_extrato", methods=["GET"])
+def ponto_banco_horas_extrato():
+    # Obtém a data inicial da query string
+    dtde = request.args.get("inicio")
+    if not dtde:
+        return jsonify({"erro": "Parâmetro 'inicio' é obrigatório."}), 400
 
     try:
-        response = requests.post(API_URL, json=body, headers=get_headers())
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
+        # Converte a data inicial para o formato datetime
+        data_inicial = datetime.strptime(dtde, "%d/%m/%Y")
+    except ValueError:
+        return jsonify({"erro": "Formato de data inválido. Use 'dd/mm/aaaa'."}), 400
 
-@app.route("/horas_extras", methods=["GET"])
-def horas_extras():
-    dtde = request.args.get("inicio")
-    dtate = request.args.get("fim")
+    # Calcula a data final (30 dias após a data inicial)
+    data_final = data_inicial + timedelta(days=30)
+    dtate = data_final.strftime("%d/%m/%Y")
 
-    if not dtde or not dtate:
-        return jsonify({"erro": "Parâmetros 'inicio' e 'fim' são obrigatórios."}), 400
-
+    # Monta o corpo da requisição
     body = {
-        "pag": "ponto_relatorio_hora_extra",
+        "pag": "ponto_banco_horas_extrato",
         "cmd": "get",
         "dtde": dtde,
         "dtate": dtate
     }
 
-    try:
-        response = requests.post(API_URL, json=body, headers=get_headers())
-        return jsonify(response.json())
-    except Exception as e:
-        return jsonify({"erro": str(e)}), 500
-
-@app.route("/ponto_banco_horas_extrato", methods=["GET"])
-def ponto_banco_horas_extrato():
-    body = {
-        "pag": "ponto_banco_horas_extrato",
-        "cmd": "get"
-    }
-
-    # Adiciona filtros da URL se existirem
+    # Adiciona filtros adicionais da URL, se existirem
     for key in request.args:
-        val = request.args.get(key)
-        # Converte para boolean ou integer se necessário
-        if val.lower() == "true":
-            val = True
-        elif val.lower() == "false":
-            val = False
-        elif val.isdigit():
-            val = int(val)
-        body[key] = val
+        if key not in ["inicio"]:
+            val = request.args.get(key)
+            # Converte para booleano ou inteiro, se aplicável
+            if val.lower() == "true":
+                val = True
+            elif val.lower() == "false":
+                val = False
+            elif val.isdigit():
+                val = int(val)
+            body[key] = val
 
     try:
         response = requests.post(API_URL, json=body, headers=get_headers())
