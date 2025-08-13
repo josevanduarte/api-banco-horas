@@ -61,10 +61,10 @@ def horas_extras():
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
-@app.route("/ponto_banco_horas_extrato", methods=["GET"])
+@app.route("/ponto_consolidado_banco", methods=["GET"])
 def ponto_banco_horas_extrato():
     body = {
-        "pag": "ponto_banco_horas_extrato",
+        "pag": "ponto_consolidado_banco",
         "cmd": "get"
     }
 
