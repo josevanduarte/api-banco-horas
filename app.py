@@ -5,68 +5,52 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# Configurações da API
-TOKEN_ORIGINAL = "mRvd11QSxXs5LUL$CfW1"        # Substituir pelo seu token original
-USER = "02297349289"           # Substituir pelo seu usuário
+# CONFIGURAÇÕES FIXAS
+TOKEN_ORIGINAL = "mRvd11QSxXs5LUL$CfW1"  # Substitua pelo seu token original
+USER = "02297349289"                      # Substitua pelo seu usuário
 API_URL = "https://stou.ifractal.com.br/i9saude/rest/"
 
-def gerar_token_sha256():
-    """Gera o token SHA256 usando o token original + data atual."""
-    data_atual = datetime.now().strftime("%d/%m/%Y")
-    token_concat = f"{TOKEN_ORIGINAL}{data_atual}"
-    return hashlib.sha256(token_concat.encode()).hexdigest()
+def gerar_token_sha256(data_formatada):
+    """Gera o token SHA256 usando o token original + data informada."""
+    token_concatenado = TOKEN_ORIGINAL + data_formatada
+    return hashlib.sha256(token_concatenado.encode()).hexdigest()
 
-@app.route("/", methods=["GET"])
+def get_headers():
+    """Monta os headers com token dinâmico do dia."""
+    data_hoje = datetime.now().strftime("%d/%m/%Y")
+    return {
+        "Content-Type": "application/json",
+        "User": USER,
+        "Token": gerar_token_sha256(data_hoje)
+    }
+
+@app.route("/")
 def home():
-    return jsonify({"status": "ok", "mensagem": "API está rodando no Render"})
+    return "✅ API Banco de Horas online! Use /banco_horas com filtros via query string."
 
-@app.route("/consultar", methods=["GET"])
-def consultar():
+@app.route("/banco_horas", methods=["GET"])
+def banco_horas():
+    """Consulta ponto_consolidado_banco com filtros opcionais via URL."""
+    body = {
+        "pag": "ponto_consolidado_banco",
+        "cmd": "get"
+    }
+
+    # Adiciona todos os filtros passados via URL
+    for key in request.args:
+        valor = request.args.get(key)
+        # Converte booleanos e inteiros automaticamente
+        if valor.lower() in ["true", "false"]:
+            valor = valor.lower() == "true"
+        elif valor.isdigit():
+            valor = int(valor)
+        body[key] = valor
+
     try:
-        # Gera token do dia
-        token_dinamico = gerar_token_sha256()
-
-        # Cabeçalho
-        headers = {
-            "Content-Type": "application/json",
-            "User": USER,
-            "Token": token_dinamico
-        }
-
-        # Base do payload
-        payload = {
-            "pag": "ponto_consolidado_banco",
-            "cmd": "get"
-        }
-
-        # Lista de parâmetros aceitos pela API
-        filtros_permitidos = [
-            "tipo_operacao_em_lote", "dtde", "dtate", "apenas_extrato",
-            "pendente_pagamento", "finalizados", "cod_pessoa", "centesimal",
-            "cod_banco_horas", "cod_empresa", "cod_unidade", "cod_cargo",
-            "demitido", "cod_centro_custo", "cod_hierarquia"
-        ]
-
-        # Adiciona filtros passados pela URL
-        for filtro in filtros_permitidos:
-            valor = request.args.get(filtro)
-            if valor is not None:
-                # Converte valores booleanos se necessário
-                if valor.lower() in ["true", "false"]:
-                    valor = valor.lower() == "true"
-                # Converte inteiros
-                elif valor.isdigit():
-                    valor = int(valor)
-                payload[filtro] = valor
-
-        # Faz a requisição POST
-        response = requests.post(API_URL, json=payload, headers=headers)
-
-        # Retorna a resposta da API original
+        response = requests.post(API_URL, json=body, headers=get_headers())
         return jsonify(response.json())
-
     except Exception as e:
         return jsonify({"erro": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=10000)
