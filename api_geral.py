@@ -63,6 +63,7 @@ def horas_extras():
 
 @app.route("/ponto_consolidado_banco", methods=["GET"])
 def ponto_consolidado_banco():
+    # Corpo base da requisição
     body = {
         "pag": "ponto_consolidado_banco",
         "cmd": "get"
@@ -71,7 +72,6 @@ def ponto_consolidado_banco():
     # Adiciona filtros da URL se existirem
     for key in request.args:
         val = request.args.get(key)
-        # Converte para boolean ou integer se necessário
         if val.lower() == "true":
             val = True
         elif val.lower() == "false":
@@ -79,6 +79,11 @@ def ponto_consolidado_banco():
         elif val.isdigit():
             val = int(val)
         body[key] = val
+
+    # DEBUG: mostra no log o body que será enviado
+    print("=== BODY ENVIADO PARA API ===")
+    print(body)
+    print("=============================")
 
     try:
         response = requests.post(API_URL, json=body, headers=get_headers())
